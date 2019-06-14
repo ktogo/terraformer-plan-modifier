@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/ktogo/terraformer-plan-splitter/plan"
+	"github.com/ktogo/terraformer-plan-modifier/plan"
 	"github.com/spf13/cobra"
 )
 

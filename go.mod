@@ -1,4 +1,4 @@
-module github.com/ktogo/terraformer-plan-splitter
+module github.com/ktogo/terraformer-plan-modifier
 
 go 1.12
 

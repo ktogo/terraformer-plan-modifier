@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/ktogo/terraformer-plan-splitter/cmd"
+	"github.com/ktogo/terraformer-plan-modifier/cmd"
 )
 
 func main() {
