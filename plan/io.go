@@ -5,18 +5,19 @@ import (
 	"os"
 	"path"
 
+	"github.com/GoogleCloudPlatform/terraformer/cmd"
 	"github.com/pkg/errors"
 )
 
 // LoadPlanfile parses JSON in a given file path and returns the plan
-func LoadPlanfile(filepath string) (interface{}, error) {
+func LoadPlanfile(filepath string) (*cmd.ImportPlan, error) {
 	f, err := os.Open(filepath)
 	if err != nil {
 		return nil, errors.Wrapf(err, `plan.LoadPlanfile failed opening '%s'`, filepath)
 	}
 	defer f.Close()
 
-	var plan interface{}
+	plan := &cmd.ImportPlan{}
 	dec := json.NewDecoder(f)
 	dec.DisallowUnknownFields()
 	if err := dec.Decode(&plan); err != nil {
@@ -27,7 +28,7 @@ func LoadPlanfile(filepath string) (interface{}, error) {
 }
 
 // ExportPlanfile saves the given plan to the path
-func ExportPlanfile(plan interface{}, filepath string) error {
+func ExportPlanfile(plan *cmd.ImportPlan, filepath string) error {
 	if err := os.MkdirAll(path.Dir(filepath), os.ModePerm); err != nil {
 		return errors.Wrapf(err, `plan.ExportPlanfile failed to create a parent directory of '%s'`, filepath)
 	}
