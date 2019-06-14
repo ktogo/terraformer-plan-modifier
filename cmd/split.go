@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/ktogo/terraformer-plan-modifier/plan"
+	terraformer_cmd "github.com/GoogleCloudPlatform/terraformer/cmd"
 	"github.com/spf13/cobra"
 )
 
@@ -12,7 +12,7 @@ func newCmdSplit() *cobra.Command {
 		Use:  "split",
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			plan, err := plan.LoadPlanfile(args[0])
+			plan, err := terraformer_cmd.LoadPlanfile(args[0])
 			if err != nil {
 				return err
 			}
