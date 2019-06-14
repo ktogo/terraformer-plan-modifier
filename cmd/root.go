@@ -12,5 +12,6 @@ func Execute() error {
 
 func newCmdRoot() *cobra.Command {
 	cmd := &cobra.Command{}
+	cmd.AddCommand(newCmdSplit())
 	return cmd
 }
