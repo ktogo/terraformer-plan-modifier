@@ -19,7 +19,7 @@ func LoadPlanfile(filepath string) (interface{}, error) {
 	var plan interface{}
 	dec := json.NewDecoder(f)
 	dec.DisallowUnknownFields()
-	if err := dec.Decode(plan); err != nil {
+	if err := dec.Decode(&plan); err != nil {
 		return nil, errors.Wrap(err, "plan.LoadPlanfile failed decoding JSON")
 	}
 
