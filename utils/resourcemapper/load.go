@@ -7,7 +7,7 @@ import (
 )
 
 // Load reads the JSON file from given path
-func Load(path string) (*MatcherSet, error) {
+func Load(path string) (Mapper, error) {
 	f, err := os.Open(path)
 	if err != nil {
 		return nil, err
