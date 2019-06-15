@@ -1,12 +1,13 @@
 package resourcemapper
 
 import (
-	"gopkg.in/yaml.v3"
 	"os"
+
+	"gopkg.in/yaml.v3"
 )
 
 // Load reads the JSON file from given path
-func Load(path string) (*MappingSet, error) {
+func Load(path string) (*MatcherSet, error) {
 	f, err := os.Open(path)
 	if err != nil {
 		return nil, err
@@ -20,5 +21,5 @@ func Load(path string) (*MappingSet, error) {
 		return nil, err
 	}
 
-	return ms, nil
+	return ms.Compile()
 }
