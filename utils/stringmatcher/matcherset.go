@@ -3,6 +3,7 @@ package stringmatcher
 import (
 	"regexp"
 
+	"github.com/ktogo/terraformer-plan-modifier/utils/resourceselector"
 	"github.com/pkg/errors"
 )
 
@@ -13,30 +14,24 @@ func New() *MatcherSet {
 
 // MatcherSet is a slice of matcher with some helper methods
 type MatcherSet struct {
-	DefaultName string
-	Matchers    []*Matcher
+	Matchers []*Matcher
 }
 
 // Add adds a new matcher to MatcherSet
-func (ms *MatcherSet) Add(name string, patterns ...string) error {
-	m := &Matcher{Name: name}
-	for _, p := range patterns {
-		r, err := regexp.Compile(p)
-		if err != nil {
-			return errors.Wrapf(err, "stringmapper.MatcherSet.Add failed compiling regexp for %s", name)
-		}
-		m.RegExps = append(m.RegExps, r)
-	}
-	ms.Matchers = append(ms.Matchers, m)
-	return nil
+func (ms *MatcherSet) Add(name string, selector resourceselector.Selector, patterns ...*regexp.Regexp) {
+	ms.Matchers = append(ms.Matchers, &Matcher{name, selector, patterns})
 }
 
 // FindMatch finds the name of matching pattern
-func (ms *MatcherSet) FindMatch(s string) string {
+func (ms *MatcherSet) FindMatch(data interface{}) (string, error) {
 	for _, m := range ms.Matchers {
-		if m.Match(s) {
-			return m.Name
+		matched, err := m.Match(data)
+		if err != nil {
+			return "", errors.Wrap(err, "MatcherSet.FindMatch")
+		}
+		if matched {
+			return m.Name, nil
 		}
 	}
-	return ms.DefaultName
+	return "", ErrNoMatch
 }

@@ -17,8 +17,11 @@ $ terraformer-plan-modifier split --mapping <mapfile> --plan <planfile>
 defaultname: default
 mappings:
   - name: example
+    selector: "{{.InstanceState.Attributes.name}}"
     patterns:
       - ^(www\.)?example\.com$
 ```
+
+Selector supports [text/template syntax](https://golang.org/pkg/text/template/).
 
 Patterns support [RE2 syntax](https://github.com/google/re2/wiki/Syntax).

@@ -48,8 +48,10 @@ func splitResources(planpath, mappath string) error {
 	resourceMap := map[string][]terraform_utils.Resource{}
 
 	for _, resource := range plan.Resources {
-		name, _ := resource.InstanceState.Attributes["name"]
-		name = mapper.Map(name)
+		name, err := mapper.Map(resource)
+		if err != nil {
+			return err
+		}
 
 		if _, ok := resourceMap[name]; !ok {
 			resourceMap[name] = []terraform_utils.Resource{}
