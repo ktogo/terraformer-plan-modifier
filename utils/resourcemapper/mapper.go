@@ -4,8 +4,8 @@ import "regexp"
 
 // MappingSet is a struct which holds a list of mapping patterns
 type MappingSet struct {
-	Mappings    []Mapping
 	DefaultName string
+	Mappings    []Mapping
 }
 
 // Mapping is a pair of mapping name and matching patterns
@@ -35,5 +35,5 @@ func (ms *MappingSet) Compile() (*MatcherSet, error) {
 		}
 		matchers = append(matchers, m)
 	}
-	return &MatcherSet{matchers, ms.DefaultName}, nil
+	return &MatcherSet{ms.DefaultName, matchers}, nil
 }

@@ -4,8 +4,8 @@ import "regexp"
 
 // MatcherSet is a slice of matcher with some helper methods
 type MatcherSet struct {
-	Matchers    []*Matcher
 	DefaultName string
+	Matchers    []*Matcher
 }
 
 // Map maps the given string to certain name
