@@ -1,8 +1,7 @@
 package resourcemapper
 
 import (
-	"regexp"
-
+	"github.com/ktogo/terraformer-plan-modifier/utils/stringmatcher"
 	"github.com/pkg/errors"
 )
 
@@ -18,26 +17,14 @@ type Mapping struct {
 	Patterns []string
 }
 
-// Add creates a new resource mapper
-func (ms *MappingSet) Add(name string, patterns ...string) {
-	ms.Mappings = append(ms.Mappings, Mapping{name, patterns})
-}
-
-// Compile compiles each mapping patterns and returns MatcherSet
-func (ms *MappingSet) Compile() (Mapper, error) {
-	matchers := make([]*Matcher, 0, len(ms.Mappings))
-
-	for _, mapping := range ms.Mappings {
-		m := &Matcher{Name: mapping.Name}
-
-		for _, p := range mapping.Patterns {
-			r, err := regexp.Compile(p)
-			if err != nil {
-				return nil, errors.Wrapf(err, "resourcemapper.MappingSet.Compile failed compiling regexp for %s", mapping.Name)
-			}
-			m.RegExps = append(m.RegExps, r)
+// Compile compiles MappingSet
+func (mapping *MappingSet) Compile() (*MatcherSet, error) {
+	matcher := &MatcherSet{stringmatcher.New()}
+	matcher.MatcherSet.DefaultName = mapping.DefaultName
+	for _, m := range mapping.Mappings {
+		if err := matcher.MatcherSet.Add(m.Name, m.Patterns...); err != nil {
+			return nil, errors.Wrap(err, "resourcemapper.MappingSet.Compile")
 		}
-		matchers = append(matchers, m)
 	}
-	return &MatcherSet{ms.DefaultName, matchers}, nil
+	return matcher, nil
 }
