@@ -3,6 +3,8 @@ package resourceselector
 import (
 	"bytes"
 	"text/template"
+
+	"github.com/pkg/errors"
 )
 
 // Selector is an interface allows selecting element from given interface
@@ -19,7 +21,7 @@ type Template struct {
 func (t *Template) Select(data interface{}) (string, error) {
 	var b bytes.Buffer
 	if err := t.Template.Execute(&b, data); err != nil {
-		return "", err
+		return "", errors.Wrap(err, "resourceselector.Template.Select")
 	}
 	return b.String(), nil
 }
@@ -28,7 +30,7 @@ func (t *Template) Select(data interface{}) (string, error) {
 func ParseString(selector string) (Selector, error) {
 	t, err := template.New("selector").Parse(selector)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "resourceselector.ParseString")
 	}
 	return &Template{t}, nil
 }
