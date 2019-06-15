@@ -22,6 +22,7 @@ func newCmdSplit() *cobra.Command {
 	cmd.MarkFlagRequired("mapping")
 	cmd.Flags().StringVarP(&opt.Planfile, "plan", "p", "", "Planfile path")
 	cmd.MarkFlagRequired("plan")
+	cmd.Flags().StringVarP(&opt.OutputDir, "output", "o", "generated", "Output directory")
 	cmd.Flags().BoolVarP(&opt.Preview, "preview", "P", false, "Preview")
 	return cmd
 }

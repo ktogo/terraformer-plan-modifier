@@ -10,6 +10,7 @@ import (
 type Options struct {
 	Planfile    string
 	Mappingfile string
+	OutputDir   string
 	Preview     bool
 }
 
@@ -35,5 +36,12 @@ func Execute(opt *Options) error {
 		return nil
 	}
 
-	return errors.New("Not Implemented")
+	for name, rs := range rm {
+		err := save(newPlanWithResources(plan, rs), opt.OutputDir, name)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
