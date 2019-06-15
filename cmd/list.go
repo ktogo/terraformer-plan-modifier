@@ -2,8 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"sort"
-	"unicode/utf8"
 
 	terraformer_cmd "github.com/GoogleCloudPlatform/terraformer/cmd"
 	"github.com/spf13/cobra"
@@ -28,33 +26,9 @@ func listResources(path string) error {
 	}
 
 	// Following codes are for aws_route53_record resources
-	names := make([]string, 0, len(plan.Resources))
-	for _, resource := range plan.Resources {
-		if name, ok := resource.InstanceState.Attributes["name"]; ok {
-			names = append(names, name)
-		}
-	}
-
-	reverseStrings(names)
-	sort.Strings(names)
-	reverseStrings(names)
-
-	for _, name := range names {
-		fmt.Println(name)
+	for _, r := range plan.Resources {
+		fmt.Println(fmt.Sprintf("%s.%s", r.InstanceInfo.Type, r.ResourceName))
 	}
 
 	return nil
-}
-
-func reverseStrings(ss []string) {
-	for i, s := range ss {
-		size := len(s)
-		buf := make([]byte, size)
-		for start := 0; start < size; {
-			r, n := utf8.DecodeRuneInString(s[start:])
-			start += n
-			utf8.EncodeRune(buf[size-start:], r)
-		}
-		ss[i] = string(buf)
-	}
 }
