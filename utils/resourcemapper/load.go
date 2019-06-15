@@ -1,7 +1,7 @@
 package resourcemapper
 
 import (
-	"encoding/json"
+	"gopkg.in/yaml.v3"
 	"os"
 )
 
@@ -14,8 +14,8 @@ func Load(path string) (*MappingSet, error) {
 	defer f.Close()
 
 	ms := new(MappingSet)
-	dec := json.NewDecoder(f)
-	dec.DisallowUnknownFields()
+	dec := yaml.NewDecoder(f)
+	dec.KnownFields(true)
 	if err := dec.Decode(ms); err != nil {
 		return nil, err
 	}
