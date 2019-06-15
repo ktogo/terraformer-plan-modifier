@@ -22,5 +22,9 @@ func Load(path string) (Mapper, error) {
 		return nil, errors.Wrap(err, "resourcemapper.Load failed parsing yaml")
 	}
 
-	return ms.Compile()
+	mapper, err := ms.Compile()
+	if err != nil {
+		return nil, errors.Wrap(err, "resourcemapper.Load")
+	}
+	return mapper, nil
 }
