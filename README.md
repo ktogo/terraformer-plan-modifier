@@ -8,7 +8,7 @@ $ terraformer-plan-modifier list <planfile>
 ## split
 
 ```bash
-$ terraformer-plan-modifier split <patternfile> <planfile>
+$ terraformer-plan-modifier split --mapping <mapfile> --plan <planfile>
 ```
 
 ### patternfile

@@ -6,28 +6,41 @@ import (
 	terraformer_cmd "github.com/GoogleCloudPlatform/terraformer/cmd"
 	"github.com/GoogleCloudPlatform/terraformer/terraform_utils"
 	"github.com/ktogo/terraformer-plan-modifier/utils/resourcemapper"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
 func newCmdSplit() *cobra.Command {
-	return &cobra.Command{
+	type Options struct {
+		Planfile    string
+		Mappingfile string
+	}
+	opt := new(Options)
+
+	cmd := &cobra.Command{
 		Use:  "split",
-		Args: cobra.ExactArgs(2),
+		Args: cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return splitResources(args[1], args[0])
+			return splitResources(opt.Planfile, opt.Mappingfile)
 		},
 		SilenceUsage:  true,
-		SilenceErrors: false,
+		SilenceErrors: true,
 	}
+
+	cmd.Flags().StringVarP(&opt.Mappingfile, "mapping", "m", "", "Mapping file path")
+	cmd.MarkFlagRequired("mapping")
+	cmd.Flags().StringVarP(&opt.Planfile, "plan", "p", "", "Planfile path")
+	cmd.MarkFlagRequired("plan")
+	return cmd
 }
 
-func splitResources(plan_path, map_path string) error {
-	plan, err := terraformer_cmd.LoadPlanfile(plan_path)
+func splitResources(planpath, mappath string) error {
+	plan, err := terraformer_cmd.LoadPlanfile(planpath)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "LoadPlanfile")
 	}
 
-	mapper, err := resourcemapper.Load(map_path)
+	mapper, err := resourcemapper.Load(mappath)
 	if err != nil {
 		return err
 	}

@@ -17,7 +17,7 @@ func newCmdList() *cobra.Command {
 			return listResources(args[0])
 		},
 		SilenceUsage:  true,
-		SilenceErrors: false,
+		SilenceErrors: true,
 	}
 }
 
