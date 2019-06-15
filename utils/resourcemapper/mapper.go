@@ -4,7 +4,8 @@ import "regexp"
 
 // MappingSet is a struct which holds a list of mapping patterns
 type MappingSet struct {
-	Mappings []Mapping
+	Mappings    []Mapping
+	DefaultName string
 }
 
 // Mapping is a pair of mapping name and matching patterns
@@ -14,15 +15,15 @@ type Mapping struct {
 }
 
 // Add creates a new resource mapper
-func (g *MappingSet) Add(name string, patterns ...string) {
-	g.Mappings = append(g.Mappings, Mapping{name, patterns})
+func (ms *MappingSet) Add(name string, patterns ...string) {
+	ms.Mappings = append(ms.Mappings, Mapping{name, patterns})
 }
 
 // Compile compiles each mapping patterns and returns MatcherSet
-func (g *MappingSet) Compile() (*MatcherSet, error) {
-	ms := make([]*Matcher, 0, len(g.Mappings))
+func (ms *MappingSet) Compile() (*MatcherSet, error) {
+	matchers := make([]*Matcher, 0, len(ms.Mappings))
 
-	for _, mapping := range g.Mappings {
+	for _, mapping := range ms.Mappings {
 		m := &Matcher{Name: mapping.Name}
 
 		for _, p := range mapping.Patterns {
@@ -32,7 +33,7 @@ func (g *MappingSet) Compile() (*MatcherSet, error) {
 			}
 			m.RegExps = append(m.RegExps, r)
 		}
-		ms = append(ms, m)
+		matchers = append(matchers, m)
 	}
-	return &MatcherSet{Matchers: ms}, nil
+	return &MatcherSet{matchers, ms.DefaultName}, nil
 }
