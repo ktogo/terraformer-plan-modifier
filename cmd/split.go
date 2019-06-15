@@ -12,35 +12,31 @@ import (
 func newCmdSplit() *cobra.Command {
 	return &cobra.Command{
 		Use:  "split",
-		Args: cobra.ExactArgs(1),
+		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return splitResources(args[0])
+			return splitResources(args[1], args[0])
 		},
 		SilenceUsage:  true,
 		SilenceErrors: false,
 	}
 }
 
-func splitResources(path string) error {
-	plan, err := terraformer_cmd.LoadPlanfile(path)
+func splitResources(plan_path, map_path string) error {
+	plan, err := terraformer_cmd.LoadPlanfile(plan_path)
 	if err != nil {
 		return err
 	}
 
-	mg := new(resourcemapper.Generator)
-	mg.Add("example", `^(?:.+\.)?example\.com$`, `my-?example`)
-
-	ms, err := mg.Compile()
+	mapper, err := resourcemapper.Load(map_path)
 	if err != nil {
 		return err
 	}
-	ms.DefaultName = "default"
 
 	resourceMap := map[string][]terraform_utils.Resource{}
 
 	for _, resource := range plan.Resources {
 		name, _ := resource.InstanceState.Attributes["name"]
-		name = ms.Map(name)
+		name = mapper.Map(name)
 
 		if _, ok := resourceMap[name]; !ok {
 			resourceMap[name] = []terraform_utils.Resource{}
