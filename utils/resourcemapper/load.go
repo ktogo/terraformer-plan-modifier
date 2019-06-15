@@ -3,6 +3,7 @@ package resourcemapper
 import (
 	"os"
 
+	"github.com/pkg/errors"
 	"gopkg.in/yaml.v3"
 )
 
@@ -10,7 +11,7 @@ import (
 func Load(path string) (Mapper, error) {
 	f, err := os.Open(path)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "resourcemapper.Load failed opening file")
 	}
 	defer f.Close()
 
@@ -18,7 +19,7 @@ func Load(path string) (Mapper, error) {
 	dec := yaml.NewDecoder(f)
 	dec.KnownFields(true)
 	if err := dec.Decode(ms); err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "resourcemapper.Load failed parsing yaml")
 	}
 
 	return ms.Compile()

@@ -1,6 +1,10 @@
 package resourcemapper
 
-import "regexp"
+import (
+	"regexp"
+
+	"github.com/pkg/errors"
+)
 
 // MappingSet is a struct which holds a list of mapping patterns
 type MappingSet struct {
@@ -29,7 +33,7 @@ func (ms *MappingSet) Compile() (Mapper, error) {
 		for _, p := range mapping.Patterns {
 			r, err := regexp.Compile(p)
 			if err != nil {
-				return nil, err
+				return nil, errors.Wrapf(err, "resourcemapper.MappingSet.Compile failed compiling regexp for %s", mapping.Name)
 			}
 			m.RegExps = append(m.RegExps, r)
 		}
