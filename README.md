@@ -1,4 +1,7 @@
-# terraformer-plan-splitter
+# Terraformer Plan Modifier
+
+CLI tool to modify the [_Plan file_](https://github.com/GoogleCloudPlatform/terraformer#planning) generated from and used for [Terraformer](https://github.com/GoogleCloudPlatform/terraformer).
+
 ## List command
 
 `list` command lists all resouces in the given planfile.
